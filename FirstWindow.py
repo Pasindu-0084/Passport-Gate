@@ -108,7 +108,8 @@ class Ui_FirstWindow(object):
         #self.ScanButton.clicked.connect(self.finalscr)
         self.ScanButton.clicked.connect(self.Callapi)
         #self.ScanButton.clicked.connect(comparefingers)
-    
+
+
         self.OutWindow = QtWidgets.QMainWindow()
         self.ui_FinalWindow = Ui_OutWindow()
         self.ui_FinalWindow.setupUi(self.OutWindow)
@@ -129,6 +130,7 @@ class Ui_FirstWindow(object):
         global thread_res
         thread_res = response 
         My_thread.start()
+        FirstWindow.hide()
         
 
     def Callapi(self,Passport_id):
@@ -154,6 +156,12 @@ class Ui_FirstWindow(object):
         self.label_2.setText(_translate("FirstWindow", "Please place your passport on the scanner"))
         self.label_3.setText(_translate("FirstWindow", "Click the SCAN button or Press \"S\""))
         self.ScanButton.setText(_translate("FirstWindow", "SCAN"))
+
+
+def restart():
+    QtCore.QCoreApplication.quit()
+    status = QtCore.QProcess.startDetached(sys.executable, sys.argv)
+    print(status)
 
 def scanPassport():
     #Current Date & Time
@@ -204,9 +212,11 @@ def scanPassport():
        
         
     else:
+        ui.SecoundWindow.hide()
         ui.ui_FinalWindow.show_img_ok(ui.ui_FinalWindow,"Your Passport Expired","Prob.png")
-        
         ui.OutWindow.show()
+        time.sleep(10)
+        restart()
         print("***Your Passport Expired***")
         
         
@@ -356,16 +366,22 @@ def scanfingurs():
 
     #comparefingers()
     if (comparefingers() == True):
+        ui.SecoundWindow.hide()
         ui.ui_FinalWindow.show_img_ok(ui.ui_FinalWindow,"Validation Successful \n" "Travel With Plesure.","ok.png")
         finger_count=0
         ui.OutWindow.show()
-        exit(1)
+        time.sleep(10)
+        restart()
+        #exit(1)
                 
     else:
+        ui.SecoundWindow.hide()
         ui.ui_FinalWindow.show_img_ok(ui.ui_FinalWindow,"Error","No.png")
         finger_count=0
         ui.OutWindow.show()
-        exit(1)
+        time.sleep(10)
+        restart()
+        #exit(1)
             
 def uploadfingers(localfilepath,fileName):
     files = {'userfile': open(localfilepath, 'rb')}
