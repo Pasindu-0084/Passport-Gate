@@ -28,6 +28,7 @@ My_thread = None
 thread_res = None
 passportId = 0
 fingerinfo = []
+finger_count=0
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -211,8 +212,9 @@ def scanPassport():
         
 
 def scanfingurs():
+
     ui.ui.retryBtn1 = False
-    finger_count=0
+    global finger_count
     fingerinfo.insert(0,str(thread_res["person_data"]["person_id"]))
     fingerinfo.insert(1,thread_res["scan_fingers"][0]["person_finger_id"])
     fingerinfo.insert(2,thread_res["scan_fingers"][1]["person_finger_id"])
@@ -242,18 +244,18 @@ def scanfingurs():
         print('Currently used templates: ' + str(f.getTemplateCount()) +'/'+ str(f.getStorageCapacity()))
         
         #templateCount = int(f.getTemplateCount())
-        #print('Currently used templates: ' + templateCount)
+        #print('Currently used templates: ' + str(f.getTemplateCount())
         
         ##delete fingers -------------------------------------------------start
-        """
-        while(int(f.getTemplateCount()) > int(0)):
-            print('Currently used templates: ' + templateCount)
-            positionNumber1 = int(f.getTemplateCount())
-            if ( f.deleteTemplate(positionNumber1) == True ):
-                print('Template deleted!')
+
+        #while(int(f.getTemplateCount()) > int(0)):
+            #print('Currently used templates: ' + str(f.getTemplateCount()))
+            #positionNumber1 = int(f.getTemplateCount())
+            #if ( f.deleteTemplate(positionNumber1) == True ):
+                #print('Template deleted!')
         
-        print('Currently used templates: ' + str(f.getTemplateCount()) +'/'+ str(f.getStorageCapacity()))
-        """
+        #print('Currently used templates: ' + str(f.getTemplateCount()) +'/'+ str(f.getStorageCapacity()))
+       
         ##delete fingers -------------------------------------------------end
 
         ## Tries to enroll new finger
@@ -261,14 +263,14 @@ def scanfingurs():
             print('Waiting for finger...')
             ui.ui.setinfo(ui.SecoundWindow,"Waiting for finger...")
 
-        ## Wait that finger is read
+            ## Wait that finger is read
             while ( f.readImage() == False ):
                 pass
 
-        ## Converts read image to characteristics and stores it in charbuffer 1
+            ## Converts read image to characteristics and stores it in charbuffer 1
             f.convertImage(0x01)
 
-        ## Checks if finger is already enrolled
+            ## Checks if finger is already enrolled
             result = f.searchTemplate()
             positionNumber = result[0]
 
@@ -280,7 +282,7 @@ def scanfingurs():
             ui.ui.setinfo(ui.SecoundWindow,"Remove finger...")
             time.sleep(3)
             
-        ## Wait that finger is read again to ensure the finger
+            ## Wait that finger is read again to ensure the finger
             print('Waiting for same finger again...')
             ui.ui.setinfo(ui.SecoundWindow,"Waiting for same finger again...")
             while ( f.readImage() == False ):
@@ -290,7 +292,7 @@ def scanfingurs():
             ui.ui.setinfo(ui.SecoundWindow,"Remove finger...")
             time.sleep(3)
             
-        ##Download and save finger image    
+            ##Download and save finger image    
             print('Downloading image (this take a while)...')
             #global fileName
             fileName = str(uuid.uuid4())
@@ -300,27 +302,27 @@ def scanfingurs():
             f.downloadImage(imageDestination)
             #print('The image was saved to "' + imageDestination + '".')
 
-        ## Converts read image to characteristics and stores it in charbuffer 2
+            ## Converts read image to characteristics and stores it in charbuffer 2
             f.convertImage(0x02)
             
-        ## Compares the charbuffer1 with charbuffer2
+            ## Compares the charbuffer1 with charbuffer2
             compare = f.compareCharacteristics()
             print('compare count - ' + str(compare) )
-            if ( compare < 250 ):
+            if ( compare < 50 ):
             #if ( f.compareCharacteristics() == 0 ):
                 raise Exception('Fingers do not match')
             
-        ## Creates a template
+            ## Creates a template
             f.createTemplate()
-        ##Manually Delete the temporary image template
+            ##Manually Delete the temporary image template
         
             #positionNumber1 = input('Please enter the template position number you want to delete: ')
             positionNumber1 = int(0)
             if ( f.deleteTemplate(positionNumber1) == True ):
                 print('Template deleted!')
-        
-            
-        ## Saves template at new position number
+
+
+            ## Saves template at new position number
             positionNumber = f.storeTemplate()
             print('Finger enrolled successfully!')
             ui.ui.setinfo(ui.SecoundWindow,"Finger enrolled successfully!")
@@ -333,6 +335,13 @@ def scanfingurs():
             #print(response)
             fingerinfo.insert(finger_count+3,uploadfingers(imageDestination,fileName))
             finger_count = finger_count+1
+        
+            
+        
+            
+            #print(response)
+            #fingerinfo.insert(finger_count+3,uploadfingers(imageDestination,fileName))
+            #finger_count = finger_count+1
             
             
         except Exception as e:
@@ -353,11 +362,13 @@ def scanfingurs():
     #comparefingers()
     if (comparefingers() == True):
         ui.ui_FinalWindow.show_img_ok(ui.ui_FinalWindow,"Validation Successful \n" "Travel With Plesure.","ok.png")
+        finger_count=0
         ui.OutWindow.show()
 #         exit(1)
                 
     else:
         ui.ui_FinalWindow.show_img_ok(ui.ui_FinalWindow,"Error","No.png")
+        finger_count=0
         ui.OutWindow.show()
         exit(1)
             
@@ -374,7 +385,7 @@ def comparefingers():
     print (fingerinfo)
     body_data = {'person_id': fingerinfo[0], 'finger_id_1': fingerinfo[1], 'finger_id_1_fingerprint': fingerinfo[3], 'finger_id_2': fingerinfo[2],'finger_id_2_fingerprint': fingerinfo[4]}
     r = requests.post('http://192.168.1.9/passport_db/index.php/person/check_gate_fingers',data=body_data)
-    print (r.text)
+    #print (r.text)
     response = r.json()
     print (response)
     return (response["matched"])
