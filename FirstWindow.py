@@ -27,7 +27,7 @@ import threading
 My_thread = None
 thread_res = None
 passportId = 0
-fingerinfo = []
+fingerinfo = [None] * 5
 finger_count=0
 from dotenv import load_dotenv
 load_dotenv()
@@ -215,9 +215,13 @@ def scanfingurs():
 
     ui.ui.retryBtn1 = False
     global finger_count
-    fingerinfo.insert(0,str(thread_res["person_data"]["person_id"]))
-    fingerinfo.insert(1,thread_res["scan_fingers"][0]["person_finger_id"])
-    fingerinfo.insert(2,thread_res["scan_fingers"][1]["person_finger_id"])
+    #fingerinfo.insert(0,str(thread_res["person_data"]["person_id"]))
+    #fingerinfo.insert(1,thread_res["scan_fingers"][0]["person_finger_id"])
+    #fingerinfo.insert(2,thread_res["scan_fingers"][1]["person_finger_id"])
+
+    fingerinfo[0] = str(thread_res["person_data"]["person_id"])
+    fingerinfo[1] = thread_res["scan_fingers"][0]["person_finger_id"]
+    fingerinfo[2] = thread_res["scan_fingers"][1]["person_finger_id"]
     
         #Get current date & time
     now = datetime.now() 
@@ -258,10 +262,13 @@ def scanfingurs():
        
         ##delete fingers -------------------------------------------------end
 
+        print('Waiting for finger...')
+        ui.ui.setinfo(ui.SecoundWindow,"Waiting for finger...")
+
+
         ## Tries to enroll new finger
         try:
-            print('Waiting for finger...')
-            ui.ui.setinfo(ui.SecoundWindow,"Waiting for finger...")
+
 
             ## Wait that finger is read
             while ( f.readImage() == False ):
@@ -308,7 +315,7 @@ def scanfingurs():
             ## Compares the charbuffer1 with charbuffer2
             compare = f.compareCharacteristics()
             print('compare count - ' + str(compare) )
-            if ( compare < 50 ):
+            if ( compare < 150 ):
             #if ( f.compareCharacteristics() == 0 ):
                 raise Exception('Fingers do not match')
             
@@ -333,7 +340,8 @@ def scanfingurs():
             time.sleep(3)
             
             #print(response)
-            fingerinfo.insert(finger_count+3,uploadfingers(imageDestination,fileName))
+            #fingerinfo.insert(finger_count+3,uploadfingers(imageDestination,fileName))
+            fingerinfo[finger_count+3] = uploadfingers(imageDestination,fileName)
             finger_count = finger_count+1
         
             
