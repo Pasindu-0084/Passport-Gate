@@ -107,7 +107,7 @@ class Ui_FirstWindow(object):
         #self.ScanButton.clicked.connect(scanPassport)
         #self.ScanButton.clicked.connect(self.finalscr)
         self.ScanButton.clicked.connect(self.Callapi)
-#         self.ScanButton.clicked.connect(comparefingers)
+        #self.ScanButton.clicked.connect(comparefingers)
     
         self.OutWindow = QtWidgets.QMainWindow()
         self.ui_FinalWindow = Ui_OutWindow()
@@ -200,7 +200,7 @@ def scanPassport():
     #print(result)
     if second_date < first_date:
         print("***Your Passport is Valid***")
-#         ui.Callapi(passportId)
+        #ui.Callapi(passportId)
        
         
     else:
@@ -250,17 +250,7 @@ def scanfingurs():
         #templateCount = int(f.getTemplateCount())
         #print('Currently used templates: ' + str(f.getTemplateCount())
         
-        ##delete fingers -------------------------------------------------start
 
-        #while(int(f.getTemplateCount()) > int(0)):
-            #print('Currently used templates: ' + str(f.getTemplateCount()))
-            #positionNumber1 = int(f.getTemplateCount())
-            #if ( f.deleteTemplate(positionNumber1) == True ):
-                #print('Template deleted!')
-        
-        #print('Currently used templates: ' + str(f.getTemplateCount()) +'/'+ str(f.getStorageCapacity()))
-       
-        ##delete fingers -------------------------------------------------end
 
         print('Waiting for finger...')
         ui.ui.setinfo(ui.SecoundWindow,"Waiting for finger...")
@@ -283,7 +273,10 @@ def scanfingurs():
 
             if ( positionNumber >= 0 ):
                 print('Template already exists at position #' + str(positionNumber))
-                exit(0)
+                positionNumber1 = positionNumber
+                if ( f.deleteTemplate(positionNumber1) == True ):
+                    print('Template deleted!')
+                #exit(0)
 
             print('Remove finger...')
             ui.ui.setinfo(ui.SecoundWindow,"Remove finger...")
@@ -328,7 +321,7 @@ def scanfingurs():
             if ( f.deleteTemplate(positionNumber1) == True ):
                 print('Template deleted!')
 
-
+        
             ## Saves template at new position number
             positionNumber = f.storeTemplate()
             print('Finger enrolled successfully!')
@@ -344,13 +337,7 @@ def scanfingurs():
             fingerinfo[finger_count+3] = uploadfingers(imageDestination,fileName)
             finger_count = finger_count+1
         
-            
-        
-            
-            #print(response)
-            #fingerinfo.insert(finger_count+3,uploadfingers(imageDestination,fileName))
-            #finger_count = finger_count+1
-            
+                  
             
         except Exception as e:
             print('Operation failed!')
@@ -372,7 +359,7 @@ def scanfingurs():
         ui.ui_FinalWindow.show_img_ok(ui.ui_FinalWindow,"Validation Successful \n" "Travel With Plesure.","ok.png")
         finger_count=0
         ui.OutWindow.show()
-#         exit(1)
+        exit(1)
                 
     else:
         ui.ui_FinalWindow.show_img_ok(ui.ui_FinalWindow,"Error","No.png")
