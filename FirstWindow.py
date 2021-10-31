@@ -134,8 +134,8 @@ class Ui_FirstWindow(object):
         
 
     def Callapi(self,Passport_id):
-        r = requests.get('http://192.168.1.9/passport_db/index.php/person/get_two_fingers/N8608414')
-        #r = requests.get('http://192.168.1.7/passport_db/index.php/person/get_two_fingers/'+ Passport_id)
+        #r = requests.get('http://192.168.1.3/passport_db/index.php/person/get_two_fingers/N8608414')
+        r = requests.get('http://192.168.1.3/passport_db/index.php/person/get_two_fingers/'+ Passport_id)
         response = r.json()
         print("Status - ",response["status"])
         print("info - " ,response["person_data"]["surname"] +""+ response["person_data"]["other_name"])
@@ -208,7 +208,7 @@ def scanPassport():
     #print(result)
     if second_date < first_date:
         print("***Your Passport is Valid***")
-        #ui.Callapi(passportId)
+        ui.Callapi(passportId)
        
         
     else:
@@ -386,7 +386,7 @@ def scanfingurs():
 def uploadfingers(localfilepath,fileName):
     files = {'userfile': open(localfilepath, 'rb')}
     body_data = {'file_name': fileName}
-    r = requests.post('http://192.168.1.9/passport_db/index.php/upload/do_upload', files=files, data=body_data)
+    r = requests.post('http://192.168.1.3/passport_db/index.php/upload/do_upload', files=files, data=body_data)
     response = r.json()
     print ('done')
     print (response["upload_data"]["file_name"])
@@ -395,7 +395,7 @@ def uploadfingers(localfilepath,fileName):
 def comparefingers():
     print (fingerinfo)
     body_data = {'person_id': fingerinfo[0], 'finger_id_1': fingerinfo[1], 'finger_id_1_fingerprint': fingerinfo[3], 'finger_id_2': fingerinfo[2],'finger_id_2_fingerprint': fingerinfo[4]}
-    r = requests.post('http://192.168.1.9/passport_db/index.php/person/check_gate_fingers',data=body_data)
+    r = requests.post('http://192.168.1.3/passport_db/index.php/person/check_gate_fingers',data=body_data)
     #print (r.text)
     response = r.json()
     print (response)
