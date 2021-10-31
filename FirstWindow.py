@@ -104,9 +104,9 @@ class Ui_FirstWindow(object):
         QtCore.QMetaObject.connectSlotsByName(FirstWindow)
         
         
-        #self.ScanButton.clicked.connect(scanPassport)
+        self.ScanButton.clicked.connect(scanPassport)
         #self.ScanButton.clicked.connect(self.finalscr)
-        self.ScanButton.clicked.connect(self.Callapi)
+        #self.ScanButton.clicked.connect(self.Callapi)
         #self.ScanButton.clicked.connect(comparefingers)
 
 
