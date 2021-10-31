@@ -154,7 +154,7 @@ class Ui_FirstWindow(object):
         FirstWindow.setWindowTitle(_translate("FirstWindow", "FirstWindow"))
         self.label.setText(_translate("FirstWindow", "Welcome"))
         self.label_2.setText(_translate("FirstWindow", "Please place your passport on the scanner"))
-        self.label_3.setText(_translate("FirstWindow", "Click the SCAN button or Press \"S\""))
+        self.label_3.setText(_translate("FirstWindow", "Click the SCAN button"))
         self.ScanButton.setText(_translate("FirstWindow", "SCAN"))
 
 
@@ -171,8 +171,8 @@ def scanPassport():
     print (" Passport scanning Process Started...")
     time.sleep(2)
     print (" It will take few seconds...")
-    time.sleep(2)
-    print (" please wait...")
+    #time.sleep(2)
+    #print (" please wait...")
     time.sleep(2)
     print (" Scanning...")
 
@@ -190,6 +190,7 @@ def scanPassport():
     # Obtain & show Img data
     mrz_data = mrz.to_dict()
     global passportId
+
     passportId = mrz_data['number'].replace("<", "")
     print(passportId)
     print('Passport ID     :'+ mrz_data['number'])
@@ -212,7 +213,7 @@ def scanPassport():
        
         
     else:
-        ui.SecoundWindow.hide()
+        FirstWindow.hide()
         ui.ui_FinalWindow.show_img_ok(ui.ui_FinalWindow,"Your Passport Expired","Prob.png")
         ui.OutWindow.show()
         time.sleep(10)
